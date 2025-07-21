@@ -50,7 +50,7 @@ class AppTheme {
       fontFamily: 'monospace',
       fontSize: fontSize,
       color: isLight ? Colors.black : Colors.white,
-      height: height, // Apply line height if provided
+      height: height,
     );
   }
 }
@@ -129,7 +129,8 @@ class _CodeEditorWidgetState extends State<CodeEditorWidget> {
   }
 
   Widget _buildLineNumbers(String content, bool isDark) {
-    final lines = content.split('\n');
+    final lines = content.split('
+');
     final int maxDigits = lines.length.toString().length;
     final double lineNumberColumnWidth = 10.0 + (maxDigits * _lineNumberFontSize * 0.7);
 

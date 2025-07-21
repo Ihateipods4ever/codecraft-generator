@@ -7,7 +7,7 @@ import './widgets/category_section_widget.dart';
 import './widgets/filter_chip_widget.dart';
 import './widgets/popular_template_card_widget.dart';
 import './widgets/template_card_widget.dart';
-import '../../routes/app_routes.dart'; // Ensure AppRoutes is imported
+// Ensure AppRoutes is imported
 
 class TemplateLibrary extends StatefulWidget {
   const TemplateLibrary({Key? key}) : super(key: key);
