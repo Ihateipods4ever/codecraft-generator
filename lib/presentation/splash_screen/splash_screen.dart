@@ -5,6 +5,7 @@ import 'package:sizer/sizer.dart';
 // Assuming AppTheme and CustomIconWidget are imported correctly from your core/app_export.dart
 // Adjust path if necessary
 // Explicitly imported if not in app_export
+import '../widgets/custom_icon_widget.dart';
 
 // NOTE: These placeholder classes for AppTheme and CustomIconWidget are included
 // to make this code self-contained and runnable for demonstration.
@@ -71,58 +72,6 @@ class AppTheme {
   }
 }
 
-class CustomIconWidget extends StatelessWidget {
-  final String iconName;
-  final Color color;
-  final double size;
-
-  const CustomIconWidget({
-    Key? key,
-    required this.iconName,
-    required this.color,
-    required this.size,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    IconData iconData;
-    switch (iconName) {
-      case 'code':
-        iconData = Icons.code;
-        break;
-      case 'chat_bubble_outline':
-        iconData = Icons.chat_bubble_outline;
-        break;
-      case 'expand_less':
-        iconData = Icons.expand_less;
-        break;
-      case 'expand_more':
-        iconData = Icons.expand_more;
-        break;
-      case 'arrow_drop_down':
-        iconData = Icons.arrow_drop_down;
-        break;
-      case 'trending_up':
-        iconData = Icons.trending_up;
-        break;
-      case 'mic':
-        iconData = Icons.mic;
-        break;
-      case 'cloud_off':
-        iconData = Icons.cloud_off;
-        break;
-      case 'file_download':
-        iconData = Icons.file_download;
-        break;
-      case 'phone_android':
-        iconData = Icons.phone_android;
-        break;
-      default:
-        iconData = Icons.help_outline; // Fallback icon
-    }
-    return Icon(iconData, color: color, size: size);
-  }
-}
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);

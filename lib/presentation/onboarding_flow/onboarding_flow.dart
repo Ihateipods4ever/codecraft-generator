@@ -7,7 +7,6 @@ import '../../core/app_export.dart'; // For AppTheme and possibly CustomIconWidg
 import './widgets/framework_selection_widget.dart'; // For FrameworkSelectionWidget
 import './widgets/onboarding_page_widget.dart'; // For OnboardingPageWidget
 import './widgets/page_indicator_widget.dart'; // For PageIndicatorWidget
-// Explicitly importing CustomIconWidget (assuming it's part of app_export or a separate file)
 
 class OnboardingFlow extends StatefulWidget {
   const OnboardingFlow({Key? key}) : super(key: key);
@@ -31,9 +30,31 @@ class _OnboardingFlowState extends State<OnboardingFlow>
 
   final List<String> _frameworks = ['React', 'Vue', 'Angular'];
   final List<String> _codeExamples = [
-    'function LoginForm() {\n  return (\n    <form>\n      <input type="email" />\n      <input type="password" />\n      <button>Login</button>\n    </form>\n  );\n}',
-    '<template>\n  <form>\n    <input v-model="email" type="email" />\n    <input v-model="password" type="password" />\n    <button @click="login">Login</button>\n  </form>\n</template>',
-    '@Component({\n  template: `\n    <form>\n      <input [(ngModel)]="email" type="email" />\n      <input [(ngModel)]="password" type="password" />\n      <button (click)="login()">Login</button>\n    </form>\n  `\n})'
+    'function LoginForm() {
+  return (
+    <form>
+      <input type="email" />
+      <input type="password" />
+      <button>Login</button>
+    </form>
+  );
+}',
+    '<template>
+  <form>
+    <input v-model="email" type="email" />
+    <input v-model="password" type="password" />
+    <button @click="login">Login</button>
+  </form>
+</template>',
+    '@Component({
+  template: `
+    <form>
+      <input [(ngModel)]="email" type="email" />
+      <input [(ngModel)]="password" type="password" />
+    <button (click)="login()">Login</button>
+    </form>
+  `
+})'
   ];
 
   @override
@@ -51,13 +72,9 @@ class _OnboardingFlowState extends State<OnboardingFlow>
       vsync: this,
     );
 
-    _slideAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _slideAnimationController,
-      curve: Curves.easeInOut,
-    ));
+    _slideAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _slideAnimationController, curve: Curves.easeInOut),
+    );
 
     _startTypingAnimation();
     _startSlideAnimation();
@@ -75,8 +92,6 @@ class _OnboardingFlowState extends State<OnboardingFlow>
       }
     });
 
-    // We'll let it repeat indefinitely or consider stopping after the first full cycle
-    // For an onboarding flow, one cycle might be enough or it could just keep animating.
     _typingAnimationController.repeat(reverse: true);
   }
 
@@ -84,8 +99,7 @@ class _OnboardingFlowState extends State<OnboardingFlow>
     _slideAnimationController.addListener(() {
       if (_slideAnimationController.isCompleted) {
         setState(() {
-          _currentFrameworkIndex =
-              (_currentFrameworkIndex + 1) % _frameworks.length;
+          _currentFrameworkIndex = (_currentFrameworkIndex + 1) % _frameworks.length;
         });
         _slideAnimationController.reset();
         Future.delayed(const Duration(milliseconds: 1000), () {
@@ -135,14 +149,10 @@ class _OnboardingFlowState extends State<OnboardingFlow>
   }
 
   void _completeOnboarding() {
-    // Replace with your actual navigation logic
-    // For example: Navigator.of(context).pushReplacementNamed('/project-dashboard');
-    // Using a simple pop for demonstration if no route is defined
     if (Navigator.of(context).canPop()) {
       Navigator.of(context).pop();
     } else {
-      // If there's no previous route, push the dashboard
-      Navigator.pushReplacementNamed(context, '/project-dashboard');
+      Navigator.pushReplacementNamed(context, AppRoutes.projectDashboardScreen);
     }
   }
 
@@ -151,13 +161,9 @@ class _OnboardingFlowState extends State<OnboardingFlow>
     return Scaffold(
       backgroundColor: AppTheme.lightTheme.scaffoldBackgroundColor,
       body: SafeArea(
-        // The main content area of the onboarding flow.
-        // It uses a Column to arrange elements vertically.
-        // The entire content is wrapped in SingleChildScrollView to handle overall scrolling if needed.
         child: SingleChildScrollView(
           child: Column(
             children: [
-              // Skip button at the top right
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
                 child: Row(
@@ -175,11 +181,8 @@ class _OnboardingFlowState extends State<OnboardingFlow>
                   ],
                 ),
               ),
-
-              // Page content displayed via PageView
-              // This SizedBox gives the PageView a definite height within the scrollable Column.
               SizedBox(
-                height: 70.h, // Fixed height for the PageView. Adjust as needed.
+                height: 70.h,
                 child: PageView(
                   controller: _pageController,
                   onPageChanged: (index) {
@@ -188,33 +191,25 @@ class _OnboardingFlowState extends State<OnboardingFlow>
                     });
                   },
                   children: [
-                    _buildPromptInputPage(),
-                    _buildMultiFrameworkPage(),
-                    _buildMobileFeaturesPage(),
-                    _buildFrameworkSelectionPage(),
+                    _buildPromptInputPage(context), // Pass context
+                    _buildMultiFrameworkPage(context), // Pass context
+                    _buildMobileFeaturesPage(context), // Pass context
+                    _buildFrameworkSelectionPage(context), // Pass context
                   ],
                 ),
               ),
-
-              // Bottom navigation area (indicators and buttons)
-              // This Container provides consistent padding and acts as the bottom section.
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 3.h),
                 child: Column(
                   children: [
-                    // Page indicators
                     PageIndicatorWidget(
                       currentPage: _currentPage,
                       totalPages: _totalPages,
                     ),
-
                     SizedBox(height: 3.h),
-
-                    // Navigation buttons (Back and Next/Get Started)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        // Back button (only visible on pages after the first)
                         _currentPage > 0
                             ? TextButton(
                                 onPressed: _previousPage,
@@ -227,21 +222,18 @@ class _OnboardingFlowState extends State<OnboardingFlow>
                                   ),
                                 ),
                               )
-                            : const SizedBox(width: 60), // Placeholder to maintain spacing
-
-                        // Next or Get Started button
-                        Expanded( // This Expanded now correctly wraps your existing button structure
-                          child: Align( // Use Align to keep the button aligned to the right within its new flexible space
+                            : const SizedBox(width: 60),
+                        Expanded(
+                          child: Align(
                             alignment: Alignment.centerRight,
                             child:
-                                // Your existing Container and ElevatedButton are now correctly nested here
                                 Container(
-                                  decoration: AppTheme.getAccentGradientDecoration(), // Assuming this returns a BoxDecoration
+                                  decoration: AppTheme.getAccentGradientDecoration(),
                                   child: ElevatedButton(
                                     onPressed: _nextPage,
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.transparent, // Makes the button background transparent to show gradient
-                                      shadowColor: Colors.transparent, // Removes shadow to prevent it clashing with gradient
+                                      backgroundColor: Colors.transparent,
+                                      shadowColor: Colors.transparent,
                                       padding: EdgeInsets.symmetric(
                                           horizontal: 8.w, vertical: 2.h),
                                     ),
@@ -271,15 +263,14 @@ class _OnboardingFlowState extends State<OnboardingFlow>
     );
   }
 
-  // Helper method to build the first onboarding page
-  Widget _buildPromptInputPage() {
+  Widget _buildPromptInputPage(BuildContext context) { // Accept context
     return OnboardingPageWidget(
-      headline: 'Natural Language\nCode Generation',
+      headline: 'Natural Language
+Code Generation',
       description:
           'Simply describe what you want to build in plain English. Our AI understands your requirements and generates production-ready code instantly.',
       illustration: Container(
-        // FIX: Increased width to provide more space for content
-        width: 90.w, // Changed from 80.w
+        width: 90.w,
         height: 25.h,
         decoration: BoxDecoration(
           color: AppTheme.lightTheme.colorScheme.primaryContainer,
@@ -296,9 +287,7 @@ class _OnboardingFlowState extends State<OnboardingFlow>
               ),
               SizedBox(height: 2.h),
               Container(
-                // Removed fixed width here to allow it to be constrained by padding
-                // and the parent 90.w container.
-                padding: EdgeInsets.symmetric(horizontal: 5.w), // Adjusted padding for better responsiveness
+                padding: EdgeInsets.symmetric(horizontal: 5.w),
                 decoration: BoxDecoration(
                   color: AppTheme.lightTheme.colorScheme.surface,
                   borderRadius: BorderRadius.circular(12),
@@ -306,7 +295,7 @@ class _OnboardingFlowState extends State<OnboardingFlow>
                     color: AppTheme.lightTheme.colorScheme.outline,
                   ),
                 ),
-                child: Row( // This is the Row at line 163
+                child: Row(
                   children: [
                     Expanded(
                       child: Text(
@@ -315,7 +304,7 @@ class _OnboardingFlowState extends State<OnboardingFlow>
                           isLight: true,
                           fontSize: 12.sp,
                         ),
-                        overflow: TextOverflow.ellipsis, // Added ellipsis to prevent overflow
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     Container(
@@ -323,7 +312,7 @@ class _OnboardingFlowState extends State<OnboardingFlow>
                       height: 20,
                       color: _typingAnimationController.value > 0.5
                           ? AppTheme.lightTheme.colorScheme.primary
-                          : Colors.transparent, // Blinking cursor
+                          : Colors.transparent,
                     ),
                   ],
                 ),
@@ -335,10 +324,10 @@ class _OnboardingFlowState extends State<OnboardingFlow>
     );
   }
 
-  // Helper method to build the second onboarding page
-  Widget _buildMultiFrameworkPage() {
+  Widget _buildMultiFrameworkPage(BuildContext context) { // Accept context
     return OnboardingPageWidget(
-      headline: 'Multi-Framework\nSupport',
+      headline: 'Multi-Framework
+Support',
       description:
           'Generate code for React, Vue, Angular, Node.js, Python, and more. Switch between frameworks seamlessly with consistent quality.',
       illustration: Container(
@@ -348,12 +337,10 @@ class _OnboardingFlowState extends State<OnboardingFlow>
           color: AppTheme.lightTheme.colorScheme.primaryContainer,
           borderRadius: BorderRadius.circular(16),
         ),
-        // Added SingleChildScrollView for the illustration content itself
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Framework tabs
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: _frameworks.asMap().entries.map((entry) {
@@ -388,10 +375,7 @@ class _OnboardingFlowState extends State<OnboardingFlow>
                   );
                 }).toList(),
               ),
-
               SizedBox(height: 2.h),
-
-              // Code preview with animation
               AnimatedBuilder(
                 animation: _slideAnimation,
                 builder: (context, child) {
@@ -410,7 +394,7 @@ class _OnboardingFlowState extends State<OnboardingFlow>
                             color: AppTheme.lightTheme.colorScheme.outline,
                           ),
                         ),
-                        child: SingleChildScrollView( // Allow code to scroll if long
+                        child: SingleChildScrollView(
                           child: Text(
                             _codeExamples[_currentFrameworkIndex],
                             style: AppTheme.getCodeTextStyle(
@@ -431,8 +415,7 @@ class _OnboardingFlowState extends State<OnboardingFlow>
     );
   }
 
-  // Helper method to build the third onboarding page
-  Widget _buildMobileFeaturesPage() {
+  Widget _buildMobileFeaturesPage(BuildContext context) { // Accept context
     final features = [
       {
         'icon': 'mic',
@@ -452,7 +435,8 @@ class _OnboardingFlowState extends State<OnboardingFlow>
     ];
 
     return OnboardingPageWidget(
-      headline: 'Mobile-First\nDevelopment',
+      headline: 'Mobile-First
+Development',
       description:
           'Optimized for mobile developers. Voice input, offline generation, and seamless project export make coding on-the-go effortless.',
       illustration: Container(
@@ -462,7 +446,6 @@ class _OnboardingFlowState extends State<OnboardingFlow>
           color: AppTheme.lightTheme.colorScheme.primaryContainer,
           borderRadius: BorderRadius.circular(16),
         ),
-        // Added SingleChildScrollView for the illustration content itself
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -476,7 +459,7 @@ class _OnboardingFlowState extends State<OnboardingFlow>
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: features.map((feature) {
-                  return Expanded( // Expanded is fine here because the Row has bounded width
+                  return Expanded(
                     child: Column(
                       children: [
                         Container(
@@ -520,19 +503,17 @@ class _OnboardingFlowState extends State<OnboardingFlow>
     );
   }
 
-  // Helper method to build the final onboarding page with framework selection
-  Widget _buildFrameworkSelectionPage() {
+  Widget _buildFrameworkSelectionPage(BuildContext context) { // Accept context
     return OnboardingPageWidget(
-      headline: 'Choose Your\nFramework',
+      headline: 'Choose Your
+Framework',
       description:
           'Select your preferred frameworks to get started. You can always change these later in settings.',
       illustration: Container(
         width: 80.w,
-        height: 25.h, // Adjusted height for this illustration
-        // Crucially, this SingleChildScrollView allows the content of FrameworkSelectionWidget to scroll
-        // if it exceeds 25.h, preventing overflow from FrameworkSelectionWidget itself.
+        height: 25.h,
         child: SingleChildScrollView(
-          child: FrameworkSelectionWidget(),
+          child: FrameworkSelectionWidget(onFrameworkSelected: (framework) {  }), // Added missing required argument
         ),
       ),
     );

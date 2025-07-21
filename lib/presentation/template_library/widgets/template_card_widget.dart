@@ -132,3 +132,6 @@ class TemplateCardWidget extends StatelessWidget {
     );
   }
 }
+
+class CustomIconWidget {
+}

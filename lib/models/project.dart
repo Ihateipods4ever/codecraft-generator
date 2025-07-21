@@ -8,6 +8,7 @@ class Project {
   final String status;
   final String description;
   final double progress;
+  final List<String> filePaths; // Added filePaths field
 
   Project({
     required this.name,
@@ -16,6 +17,7 @@ class Project {
     required this.status,
     required this.description,
     required this.progress,
+    required this.filePaths, // Added filePaths to constructor
   });
 
   /// Helper to format the lastModified date for display.

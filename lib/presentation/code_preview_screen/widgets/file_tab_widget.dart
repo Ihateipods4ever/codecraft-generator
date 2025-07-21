@@ -2,17 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../core/app_export.dart';
+import '../../widgets/custom_icon_widget.dart';
 
 class FileTabWidget extends StatelessWidget {
   final String fileName;
   final bool isActive;
   final bool hasUnsavedChanges;
+  final VoidCallback? onTap; // Added onTap callback
 
   const FileTabWidget({
     Key? key,
     required this.fileName,
     required this.isActive,
     this.hasUnsavedChanges = false,
+    this.onTap, // Added onTap to constructor
   }) : super(key: key);
 
   String _getFileIcon(String fileName) {
@@ -42,7 +45,8 @@ class FileTabWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Tab(
+    return GestureDetector(
+      onTap: onTap, // Use the onTap callback
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
         decoration: BoxDecoration(

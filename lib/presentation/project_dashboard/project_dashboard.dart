@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
-// Keep this import for _parseRelativeTime
 
 import '../../core/app_export.dart';
-import '../../models/project.dart'; // Import the central Project model
+import '../../models/project.dart';
 import './widgets/empty_state_widget.dart';
 import './widgets/project_card_widget.dart';
 import './widgets/stats_card_widget.dart';
-// Ensure CustomIconWidget is imported
 
 class ProjectDashboard extends StatefulWidget {
   const ProjectDashboard({Key? key}) : super(key: key);
@@ -17,7 +15,6 @@ class ProjectDashboard extends StatefulWidget {
 }
 
 class _ProjectDashboardState extends State<ProjectDashboard> {
-  // Helper function to parse relative time strings into DateTime objects
   DateTime? _parseRelativeTime(String relativeTime) {
     final now = DateTime.now();
     if (relativeTime.contains('hours ago')) {
@@ -33,11 +30,9 @@ class _ProjectDashboardState extends State<ProjectDashboard> {
         return now.subtract(const Duration(days: 1));
       }
     }
-    // Return null if parsing fails or for other formats
     return null;
   }
 
-  // Initialize projects with DateTime objects for lastModified
   late final List<Project> _projects;
 
   @override
@@ -47,26 +42,29 @@ class _ProjectDashboardState extends State<ProjectDashboard> {
       Project(
         name: 'E-commerce App',
         framework: 'React',
-        lastModified: _parseRelativeTime('2 hours ago'), // Convert to DateTime
+        lastModified: _parseRelativeTime('2 hours ago'),
         status: 'Active',
         description: 'Full-stack e-commerce application with payment integration',
         progress: 0.75,
+        filePaths: [], // Added required filePaths argument
       ),
       Project(
         name: 'Portfolio Website',
         framework: 'Vue',
-        lastModified: _parseRelativeTime('1 day ago'), // Convert to DateTime
+        lastModified: _parseRelativeTime('1 day ago'),
         status: 'Completed',
         description: 'Personal portfolio website with modern design',
         progress: 1.0,
+        filePaths: [], // Added required filePaths argument
       ),
       Project(
         name: 'Task Manager',
         framework: 'Flutter',
-        lastModified: _parseRelativeTime('3 days ago'), // Convert to DateTime
+        lastModified: _parseRelativeTime('3 days ago'),
         status: 'In Progress',
         description: 'Cross-platform task management application',
         progress: 0.45,
+        filePaths: [], // Added required filePaths argument
       ),
     ];
   }
@@ -87,7 +85,7 @@ class _ProjectDashboardState extends State<ProjectDashboard> {
                 color: AppTheme.lightTheme.colorScheme.primary,
                 size: 24),
             onPressed: () {
-              Navigator.pushNamed(context, '/openai-demo-screen');
+              Navigator.pushNamed(context, AppRoutes.openAiDemoScreen);
             },
           ),
           IconButton(
@@ -106,7 +104,6 @@ class _ProjectDashboardState extends State<ProjectDashboard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Stats cards
             Row(
               children: [
                 Expanded(
@@ -132,19 +129,20 @@ class _ProjectDashboardState extends State<ProjectDashboard> {
 
             SizedBox(height: 3.h),
 
-            // Quick actions
             Row(
               children: [
                 Expanded(
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/code-generation-screen');
+                      Navigator.pushNamed(context, AppRoutes.codeGenerationScreen);
                     },
                     icon: CustomIconWidget(
                         iconName: 'add', color: Colors.white, size: 20),
-                    label: const Text( // Removed Flexible/Expanded here
-                      'New Project',
-                      overflow: TextOverflow.ellipsis, // Directly apply ellipsis
+                    label: const Flexible(
+                      child: Text(
+                        'New Project',
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                     style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.symmetric(vertical: 3.h)),
@@ -154,15 +152,17 @@ class _ProjectDashboardState extends State<ProjectDashboard> {
                 Expanded(
                   child: OutlinedButton.icon(
                     onPressed: () {
-                      Navigator.pushNamed(context, '/template-library');
+                      Navigator.pushNamed(context, AppRoutes.templateLibraryScreen);
                     },
                     icon: CustomIconWidget(
                         iconName: 'library_books',
                         color: AppTheme.lightTheme.colorScheme.primary,
                         size: 20),
-                    label: const Text( // Removed Flexible/Expanded here
-                      'Templates',
-                      overflow: TextOverflow.ellipsis, // Directly apply ellipsis
+                    label: const Flexible(
+                      child: Text(
+                        'Templates',
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                     style: OutlinedButton.styleFrom(
                         padding: EdgeInsets.symmetric(vertical: 3.h)),
@@ -173,16 +173,14 @@ class _ProjectDashboardState extends State<ProjectDashboard> {
 
             SizedBox(height: 4.h),
 
-            // Projects section
             Text('Recent Projects',
                 style: AppTheme.lightTheme.textTheme.titleMedium),
             SizedBox(height: 2.h),
 
-            // Projects list
             if (_projects.isEmpty)
               EmptyStateWidget(
                 onCreateProject: () {
-                  Navigator.pushNamed(context, '/code-generation-screen');
+                  Navigator.pushNamed(context, AppRoutes.codeGenerationScreen);
                 },
               )
             else
@@ -197,10 +195,9 @@ class _ProjectDashboardState extends State<ProjectDashboard> {
                     child: ProjectCardWidget(
                       project: project,
                       onTap: () {
-                        Navigator.pushNamed(context, '/code-preview-screen');
+                        Navigator.pushNamed(context, AppRoutes.codePreviewScreen, arguments: project);
                       },
                       onLongPress: () {
-                        // Handle long press, e.g., show a dialog with options
                         _showProjectOptions(context, project);
                       },
                     ),
@@ -224,8 +221,7 @@ class _ProjectDashboardState extends State<ProjectDashboard> {
                 leading: const Icon(Icons.edit),
                 title: const Text('Edit Project'),
                 onTap: () {
-                  Navigator.pop(bc); // Close the bottom sheet
-                  // Implement edit project logic
+                  Navigator.pop(bc);
                   print('Edit project: ${project.name}');
                 },
               ),
@@ -233,8 +229,7 @@ class _ProjectDashboardState extends State<ProjectDashboard> {
                 leading: const Icon(Icons.delete),
                 title: const Text('Delete Project'),
                 onTap: () {
-                  Navigator.pop(bc); // Close the bottom sheet
-                  // Implement delete project logic
+                  Navigator.pop(bc);
                   print('Delete project: ${project.name}');
                 },
               ),
@@ -242,8 +237,7 @@ class _ProjectDashboardState extends State<ProjectDashboard> {
                 leading: const Icon(Icons.share),
                 title: const Text('Share Project'),
                 onTap: () {
-                  Navigator.pop(bc); // Close the bottom sheet
-                  // Implement share project logic
+                  Navigator.pop(bc);
                   print('Share project: ${project.name}');
                 },
               ),

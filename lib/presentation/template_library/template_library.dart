@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart'; // Keep sizer for overall responsive layout, but use sparingly for fixed elements
-
+import '../widgets/custom_icon_widget.dart';
 import '../../core/app_export.dart';
 import './widgets/category_section_widget.dart';
 import './widgets/filter_chip_widget.dart';

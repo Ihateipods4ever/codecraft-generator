@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
-
+import '../../widgets/custom_icon_widget.dart';
 
 class EmptyStateWidget extends StatelessWidget {
   final VoidCallback onCreateProject;

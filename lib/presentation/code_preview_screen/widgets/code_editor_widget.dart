@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_highlight/flutter_highlight.dart';
 import 'package:flutter_highlight/themes/github.dart';
 import 'package:flutter_highlight/themes/vs2015.dart';
+import 'package:flutter/services.dart'; // Import this for clipboard functionality
 
 // --- Placeholder for AppTheme and CustomIconWidget for demonstration ---
 // In a real app, these would come from your core/app_export.dart or similar.
@@ -12,7 +13,7 @@ extension ColorExtension on Color {
       red != null ? red.toInt() : this.red,
       green != null ? green.toInt() : this.green,
       blue != null ? blue.toInt() : this.blue,
-      alpha ?? this.opacity,
+      alpha != null ? alpha.toDouble() : this.opacity,
     );
   }
 }
@@ -105,7 +106,7 @@ class CodeEditorWidget extends StatefulWidget {
   State<CodeEditorWidget> createState() => _CodeEditorWidgetState();
 }
 
-class _CodeEditorWidgetState extends State<CodeEditorWidget> {
+class _CodeEditorWidgetState extends State<CodeEditorWidget> with AutomaticKeepAliveClientMixin<CodeEditorWidget> {
   late TextEditingController _textController;
   late ScrollController _scrollController;
   bool _isEditing = false;
@@ -113,6 +114,9 @@ class _CodeEditorWidgetState extends State<CodeEditorWidget> {
   final double _editorFontSize = 14.0;
   final double _lineNumberFontSize = 12.0;
   final double _estimatedLineHeight = 20.0;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -174,6 +178,7 @@ class _CodeEditorWidgetState extends State<CodeEditorWidget> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context); // Important for AutomaticKeepAliveClientMixin
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
@@ -214,13 +219,10 @@ class _CodeEditorWidgetState extends State<CodeEditorWidget> {
                             setState(() {});
                           },
                           contextMenuBuilder: (BuildContext context, EditableTextState editableTextState) {
-                            // FIX 1: Access controller via .widget.controller
                             final TextEditingController controller = editableTextState.widget.controller;
                             final TextSelection selection = controller.selection;
 
                             if (selection.isValid && !selection.isCollapsed) {
-                              // FIX 2: Access controller via .widget.controller
-                              final selectedText = selection.textInside(editableTextState.widget.controller.text);
                               return AdaptiveTextSelectionToolbar.buttonItems(
                                 anchors: editableTextState.contextMenuAnchors,
                                 buttonItems: <ContextMenuButtonItem>[

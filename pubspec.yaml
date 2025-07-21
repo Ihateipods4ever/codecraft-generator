@@ -6,7 +6,7 @@ dependencies:
   flutter:
     sdk: flutter
   intl: ^0.18.0 # Use the latest version
-  sizer: ^3.0.0
+  sizer: ^3.0.0 # Use the latest version
   flutter_highlight: any
   flutter_dotenv: any
   google_generative_ai: any
@@ -52,4 +52,4 @@ flutter:
   #         weight: 700
   #
   # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/custom-fonts/#from-packages
+  # see https://flutter.dev/custom-fonts/#from-packages.  fix it

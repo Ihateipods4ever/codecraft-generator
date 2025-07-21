@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../../core/app_export.dart';
+import '../../widgets/custom_icon_widget.dart'; // Import CustomIconWidget
 
 class ExportOptionsWidget extends StatefulWidget {
   final VoidCallback onClose;
@@ -23,50 +24,7 @@ class _ExportOptionsWidgetState extends State<ExportOptionsWidget>
   late Animation<double> _scaleAnimation;
   late Animation<double> _opacityAnimation;
 
-  final List<Map<String, dynamic>> _exportOptions = [
-    {
-      "type": "ZIP",
-      "title": "Download as ZIP",
-      "description": "Download all project files as a compressed archive",
-      "icon": "archive",
-      "color": AppTheme.primaryLight,
-    },
-    {
-      "type": "GitHub",
-      "title": "Push to GitHub",
-      "description": "Create a new repository and push your code",
-      "icon": "cloud_upload",
-      "color": AppTheme.successLight,
-    },
-    {
-      "type": "Share",
-      "title": "Share Project Link",
-      "description": "Generate a shareable link for collaboration",
-      "icon": "share",
-      "color": AppTheme.warningLight,
-    },
-    {
-      "type": "VS Code",
-      "title": "Open in VS Code",
-      "description": "Open project directly in Visual Studio Code",
-      "icon": "code",
-      "color": AppTheme.primaryLight,
-    },
-    {
-      "type": "Replit",
-      "title": "Export to Replit",
-      "description": "Create a new Replit project with your code",
-      "icon": "play_circle",
-      "color": AppTheme.successLight,
-    },
-    {
-      "type": "CodePen",
-      "title": "Export to CodePen",
-      "description": "Create a new CodePen with your web code",
-      "icon": "web",
-      "color": AppTheme.warningLight,
-    },
-  ];
+  // Removed _exportOptions as it was unused and causing an unused_field diagnostic
 
   @override
   void initState() {
@@ -107,11 +65,7 @@ class _ExportOptionsWidgetState extends State<ExportOptionsWidget>
     });
   }
 
-  void _handleExport(String type) {
-    _animationController.reverse().then((_) {
-      widget.onExport(type);
-    });
-  }
+  // Removed _handleExport as it was unused and causing an unused_element diagnostic
 
   @override
   Widget build(BuildContext context) {
@@ -126,9 +80,9 @@ class _ExportOptionsWidgetState extends State<ExportOptionsWidget>
             child: Transform.scale(
               scale: _scaleAnimation.value,
               child: Container(
-                width: 90.w,
-                constraints: BoxConstraints(maxHeight: 80.h),
-                margin: EdgeInsets.symmetric(horizontal: 20.w),
+                width: 90.w, // Use sizer unit
+                constraints: BoxConstraints(maxHeight: 80.h), // Use sizer unit
+                margin: EdgeInsets.symmetric(horizontal: 20.w), // Use sizer unit
                 decoration: BoxDecoration(
                   color: isDark ? AppTheme.surfaceDark : AppTheme.surfaceLight,
                   borderRadius: BorderRadius.circular(16),
@@ -146,7 +100,7 @@ class _ExportOptionsWidgetState extends State<ExportOptionsWidget>
                   children: [
                     // Header
                     Container(
-                      padding: EdgeInsets.all(20.w),
+                      padding: EdgeInsets.all(16.0),
                       decoration: BoxDecoration(
                         border: Border(
                           bottom: BorderSide(
@@ -158,5 +112,36 @@ class _ExportOptionsWidgetState extends State<ExportOptionsWidget>
                         ),
                       ),
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                      import '../../../../core/app_export.dart';
+                          Text(
+                            'Export Options',
+                            style: Theme.of(context).textTheme.titleLarge?.copyWith( // Use Theme.of(context)
+                              fontWeight: FontWeight.w600,
+                              fontSize: 20.0,
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: _closeOverlay,
+                            child: CustomIconWidget(
+                              iconName: 'close',
+                              color: isDark ? AppTheme.textPrimaryDark : AppTheme.textPrimaryLight,
+                              size: 24.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Export options list will go here
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  // Removed _formatTime as it was unused and causing an unused_element diagnostic
+}

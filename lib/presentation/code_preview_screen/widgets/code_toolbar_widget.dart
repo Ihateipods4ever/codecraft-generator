@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:sizer/sizer.dart';
 
 import '../../../core/app_export.dart';
+import '../../widgets/custom_icon_widget.dart';
 
 class CodeToolbarWidget extends StatelessWidget {
   final Map<String, dynamic> currentFile;
@@ -32,8 +32,8 @@ class CodeToolbarWidget extends StatelessWidget {
     final canRun = _canRunFile(currentFile["name"]);
 
     return Container(
-      height: 80, // Reduced height from 60.h to a fixed value for a toolbar
-      padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h), // Adjusted padding to be consistent with other screens
+      height: 80,
+      padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
       decoration: BoxDecoration(
         color: isDark ? AppTheme.surfaceDark : AppTheme.surfaceLight,
         border: Border(
@@ -45,7 +45,6 @@ class CodeToolbarWidget extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // File Info
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,33 +52,31 @@ class CodeToolbarWidget extends StatelessWidget {
               children: [
                 Text(
                   currentFile["name"],
-                  style: AppTheme.lightTheme.textTheme.labelMedium?.copyWith(
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
                     color: isDark
                         ? AppTheme.textPrimaryDark
                         : AppTheme.textPrimaryLight,
                     fontWeight: FontWeight.w500,
                   ),
-                  overflow: TextOverflow.ellipsis, // Ensure file name truncates if too long
+                  overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                 ),
                 Text(
                   '${currentFile["size"]} • Modified ${_formatTime(currentFile["lastModified"])}',
-                  style: AppTheme.lightTheme.textTheme.labelSmall?.copyWith(
+                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
                     color: isDark
                         ? AppTheme.textSecondaryDark
                         : AppTheme.textSecondaryLight,
                   ),
-                  overflow: TextOverflow.ellipsis, // Ensure time info truncates
+                  overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                 ),
               ],
             ),
           ),
-
-          // Action Buttons - This Row was causing the overflow
-          Expanded( // <--- Wrapped the action buttons Row in Expanded
+          Expanded(
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.end, // Align buttons to the right
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 _buildToolbarButton(
                   icon: 'content_copy',
@@ -87,7 +84,7 @@ class CodeToolbarWidget extends StatelessWidget {
                   onTap: onCopy,
                   isDark: isDark,
                 ),
-                SizedBox(width: 2.w), // Adjusted spacing
+                SizedBox(width: 16.0),
                 _buildToolbarButton(
                   icon: 'code',
                   label: 'Format',
@@ -95,7 +92,7 @@ class CodeToolbarWidget extends StatelessWidget {
                   isDark: isDark,
                 ),
                 if (canRun) ...[
-                  SizedBox(width: 2.w), // Adjusted spacing
+                  SizedBox(width: 16.0),
                   _buildToolbarButton(
                     icon: 'play_arrow',
                     label: 'Run',
@@ -104,7 +101,7 @@ class CodeToolbarWidget extends StatelessWidget {
                     isHighlighted: true,
                   ),
                 ],
-                SizedBox(width: 2.w), // Adjusted spacing
+                SizedBox(width: 16.0),
                 _buildToolbarButton(
                   icon: isOptimizing ? 'hourglass_empty' : 'auto_fix_high',
                   label: 'AI Optimize',
@@ -132,19 +129,17 @@ class CodeToolbarWidget extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        // Adjusted horizontal padding to be a fixed value, as percentage width
-        // on small buttons can cause issues when combined with Expanded parents.
-        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0), // Changed vertical padding to fixed value
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
         decoration: BoxDecoration(
           color: isHighlighted
               ? (isDark
-                  ? AppTheme.primaryDark.withOpacity(0.1) // Use withOpacity for clarity
-                  : AppTheme.primaryLight.withOpacity(0.1))
+                  ? Theme.of(null!).primaryColor.withOpacity(0.1)
+                  : Theme.of(null!).primaryColor.withOpacity(0.1))
               : Colors.transparent,
           borderRadius: BorderRadius.circular(8),
           border: isHighlighted
               ? Border.all(
-                  color: isDark ? AppTheme.primaryDark : AppTheme.primaryLight,
+                  color: isDark ? Theme.of(null!).primaryColor : Theme.of(null!).primaryColor,
                   width: 1,
                 )
               : null,
@@ -154,12 +149,12 @@ class CodeToolbarWidget extends StatelessWidget {
           children: [
             isLoading
                 ? SizedBox(
-                    width: 24, // Fixed size for progress indicator
-                    height: 24, // Fixed size for progress indicator
+                    width: 24,
+                    height: 24,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
                       valueColor: AlwaysStoppedAnimation<Color>(
-                        isDark ? AppTheme.primaryDark : AppTheme.primaryLight,
+                        isDark ? Theme.of(null!).primaryColor : Theme.of(null!).primaryColor,
                       ),
                     ),
                   )
@@ -171,31 +166,31 @@ class CodeToolbarWidget extends StatelessWidget {
                             : AppTheme.textDisabledLight)
                         : isHighlighted
                             ? (isDark
-                                ? AppTheme.primaryDark
-                                : AppTheme.primaryLight)
+                                ? Theme.of(null!).primaryColor
+                                : Theme.of(null!).primaryColor)
                             : (isDark
                                 ? AppTheme.textSecondaryDark
                                 : AppTheme.textSecondaryLight),
-                    size: 20, // Adjusted icon size
+                    size: 20,
                   ),
-            SizedBox(height: 4.0), // Adjusted spacing to fixed value
+            SizedBox(height: 4.0),
             Text(
               label,
-              style: AppTheme.lightTheme.textTheme.labelSmall?.copyWith(
+              style: Theme.of(null!).textTheme.labelSmall?.copyWith(
                 color: onTap == null
                     ? (isDark
                         ? AppTheme.textDisabledDark
                         : AppTheme.textDisabledLight)
                     : isHighlighted
                         ? (isDark
-                            ? AppTheme.primaryDark
-                            : AppTheme.primaryLight)
+                            ? Theme.of(null!).primaryColor
+                            : Theme.of(null!).primaryColor)
                         : (isDark
                             ? AppTheme.textSecondaryDark
                             : AppTheme.textSecondaryLight),
-                fontSize: 9.sp, // Adjusted font size
+                fontSize: 9,
               ),
-              overflow: TextOverflow.ellipsis, // Ensure label truncates if too long
+              overflow: TextOverflow.ellipsis,
               maxLines: 1,
             ),
           ],

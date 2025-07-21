@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
-// Assuming AppTheme and CustomIconWidget are imported correctly via app_export
-// Adjust path if necessary
-// Explicitly imported as per user's code
+import '../../core/app_export.dart';
+import '../widgets/custom_icon_widget.dart';
 
 class StatsCardWidget extends StatelessWidget {
   final String title;
@@ -22,8 +21,7 @@ class StatsCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // FIX: Increased width to provide more space for content
-      width: 40.w, // Changed from 35.w to provide more horizontal space
+      width: 40.w,
       padding: EdgeInsets.all(4.w),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
@@ -42,12 +40,11 @@ class StatsCardWidget extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // FIX: Wrap the left icon container in Expanded to make it flexible
               Expanded(
                 child: Container(
                   padding: EdgeInsets.all(2.w),
                   decoration: BoxDecoration(
-                    color: color.withOpacity(0.1), // Corrected to withOpacity
+                    color: color.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: CustomIconWidget(
@@ -57,7 +54,6 @@ class StatsCardWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              // FIX: Keep the right icon in Expanded to ensure it fits
               Expanded(
                 child: Align(
                   alignment: Alignment.centerRight,
