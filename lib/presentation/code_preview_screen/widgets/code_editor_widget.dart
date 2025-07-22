@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_highlight/flutter_highlight.dart';
 import 'package:flutter_highlight/themes/github.dart';
 import 'package:flutter_highlight/themes/vs2015.dart';
-import 'package:flutter/services.dart'; // Import this for clipboard functionality
 
 // --- Placeholder for AppTheme and CustomIconWidget for demonstration ---
 // In a real app, these would come from your core/app_export.dart or similar.
@@ -30,7 +29,7 @@ class AppTheme {
   static ThemeData darkTheme = ThemeData.dark().copyWith(
     primaryColor: Colors.blue,
     colorScheme: const ColorScheme.dark().copyWith(
-      surface: const Color(0xFF1E1E1E), // A common dark background color for code editors
+      surface: Color(0xFF1E1E1E), // A common dark background color for code editors
       onSurface: Colors.white,
     ),
   );
@@ -133,8 +132,8 @@ class _CodeEditorWidgetState extends State<CodeEditorWidget> with AutomaticKeepA
   }
 
   Widget _buildLineNumbers(String content, bool isDark) {
-    final lines = content.split('
-');
+    // Corrected: Replaced the literal newline with the '\n' escape sequence.
+    final lines = content.split('\n');
     final int maxDigits = lines.length.toString().length;
     final double lineNumberColumnWidth = 10.0 + (maxDigits * _lineNumberFontSize * 0.7);
 

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-// Remove the sizer import
-// import 'package:sizer/sizer.dart' as Sizer;
 import 'core/app_export.dart';
 
 void main() async {
+  // Ensures that widget binding is initialized before running the app.
   WidgetsFlutterBinding.ensureInitialized();
+  // Loads environment variables from the .env file.
   await dotenv.load(fileName: ".env");
   runApp(const MyApp());
 }
@@ -15,12 +15,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Remove the Sizer widget
     return MaterialApp(
-      theme: AppTheme.lightTheme,
+      theme: AppTheme.lightTheme, // Using the light theme defined in AppTheme.
       title: 'CodeCraft Generator',
       debugShowCheckedModeBanner: false,
-      initialRoute: AppRoutes.homeScreen,
+      // Corrected: Set the initial route to a valid screen like the splash screen.
+      // The 'homeScreen' route was removed from AppRoutes, causing the error.
+      initialRoute: AppRoutes.splashScreen,
+      // Uses the routes map defined in the AppRoutes class for navigation.
       routes: AppRoutes.routes,
     );
   }

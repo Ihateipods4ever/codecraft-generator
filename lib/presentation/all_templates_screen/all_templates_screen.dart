@@ -1,75 +1,57 @@
 import 'package:flutter/material.dart';
+// Corrected: The import path for TemplateCardWidget was incorrect.
+import '../template_library/widgets/template_card_widget.dart';
 
-import '../../core/app_export.dart';
-import '../template_library/widgets/template_card_widget.dart'; // Assuming this path
-
-class AllTemplatesScreen extends StatefulWidget {
+class AllTemplatesScreen extends StatelessWidget {
   final Map<String, dynamic> categoryData;
 
-  const AllTemplatesScreen({Key? key, required this.categoryData}) : super(key: key);
-
-  @override
-  State<AllTemplatesScreen> createState() => _AllTemplatesScreenState();
-}
-
-class _AllTemplatesScreenState extends State<AllTemplatesScreen> {
-  // You might want to add search/filter functionality here later if needed
-  // For now, it just displays all templates for the passed category.
+  const AllTemplatesScreen({
+    Key? key,
+    required this.categoryData,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final String categoryName = widget.categoryData['name'];
-    final List<Map<String, dynamic>> templates = List<Map<String, dynamic>>.from(widget.categoryData['templates']);
+    final theme = Theme.of(context);
+    final templates = (categoryData['templates'] as List<dynamic>?)
+            ?.map((e) => e as Map<String, dynamic>)
+            .toList() ??
+        [];
 
     return Scaffold(
-      backgroundColor: AppTheme.lightTheme.scaffoldBackgroundColor,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: AppTheme.lightTheme.colorScheme.surface,
-        elevation: 1.0,
-        shadowColor: Colors.black.withOpacity(0.1),
-        leading: GestureDetector(
-          onTap: () => Navigator.pop(context),
-          child: Icon(Icons.arrow_back, color: AppTheme.lightTheme.colorScheme.onSurface),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          '$categoryName Templates',
-          style: AppTheme.lightTheme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
+          categoryData['name'] ?? 'All Templates',
+          style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
         ),
+        backgroundColor: theme.colorScheme.surface,
+        elevation: 1,
       ),
       body: templates.isEmpty
-          ? Center(
-              child: Text(
-                'No templates found for this category.',
-                style: AppTheme.lightTheme.textTheme.bodyMedium?.copyWith(color: Colors.grey),
-              ),
+          ? const Center(
+              child: Text('No templates available in this category.'),
             )
           : GridView.builder(
-              padding: const EdgeInsets.all(16.0), // Fixed padding
+              padding: const EdgeInsets.all(16.0),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                childAspectRatio: 0.7, // Adjusted aspect ratio for cards
-                crossAxisSpacing: 16.0, // Fixed spacing
-                mainAxisSpacing: 16.0, // Fixed spacing
+                childAspectRatio: 0.7,
+                crossAxisSpacing: 16.0,
+                mainAxisSpacing: 16.0,
               ),
               itemCount: templates.length,
               itemBuilder: (context, index) {
                 final template = templates[index];
-                // You'll need to pass proper onFavorite and onTap handlers here
-                // For simplicity, I'm using a placeholder onTap and no onFavorite
                 return TemplateCardWidget(
-                  template: template,
+                  templateData: template,
                   onTap: () {
-                    // Implement navigation to template preview or code generation
-                    // For now, just show a snackbar
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Tapped on ${template['name']}')),
-                    );
-                  },
-                  onFavorite: () {
-                    // Implement favorite toggling if needed
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Favorited ${template['name']}')),
-                    );
+                    // TODO: Implement navigation or preview logic for the template
+                    print('Tapped on ${template['name']}');
                   },
                 );
               },

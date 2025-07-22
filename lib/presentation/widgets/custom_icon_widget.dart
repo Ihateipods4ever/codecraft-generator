@@ -34,9 +34,9 @@ class CustomIconWidget extends StatelessWidget {
       case 'arrow_forward_ios':
         iconData = Icons.arrow_forward_ios;
         break;
-      // Add more cases for other icon names as needed
+      // You can add more icon cases here
       default:
-        iconData = Icons.error; // Or a default icon
+        iconData = Icons.error; // A default icon for any unknown names
     }
 
     return Icon(

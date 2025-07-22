@@ -7,6 +7,7 @@ import '../../core/app_export.dart'; // For AppTheme and possibly CustomIconWidg
 import './widgets/framework_selection_widget.dart'; // For FrameworkSelectionWidget
 import './widgets/onboarding_page_widget.dart'; // For OnboardingPageWidget
 import './widgets/page_indicator_widget.dart'; // For PageIndicatorWidget
+import '../widgets/custom_icon_widget.dart'; // Corrected import for CustomIconWidget
 
 class OnboardingFlow extends StatefulWidget {
   const OnboardingFlow({Key? key}) : super(key: key);
@@ -15,6 +16,7 @@ class OnboardingFlow extends StatefulWidget {
   State<OnboardingFlow> createState() => _OnboardingFlowState();
 }
 
+// The 'with TickerProviderStateMixin' is now in the correct position
 class _OnboardingFlowState extends State<OnboardingFlow>
     with TickerProviderStateMixin {
   late PageController _pageController;
@@ -30,7 +32,7 @@ class _OnboardingFlowState extends State<OnboardingFlow>
 
   final List<String> _frameworks = ['React', 'Vue', 'Angular'];
   final List<String> _codeExamples = [
-    'function LoginForm() {
+    '''function LoginForm() {
   return (
     <form>
       <input type="email" />
@@ -38,23 +40,23 @@ class _OnboardingFlowState extends State<OnboardingFlow>
       <button>Login</button>
     </form>
   );
-}',
-    '<template>
+}''',
+    '''<template>
   <form>
     <input v-model="email" type="email" />
     <input v-model="password" type="password" />
     <button @click="login">Login</button>
   </form>
-</template>',
-    '@Component({
+</template>''',
+    '''@Component({
   template: `
     <form>
       <input [(ngModel)]="email" type="email" />
       <input [(ngModel)]="password" type="password" />
-    <button (click)="login()">Login</button>
+      <button (click)="login()">Login</button>
     </form>
   `
-})'
+})'''
   ];
 
   @override
@@ -73,7 +75,8 @@ class _OnboardingFlowState extends State<OnboardingFlow>
     );
 
     _slideAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _slideAnimationController, curve: Curves.easeInOut),
+      CurvedAnimation(
+          parent: _slideAnimationController, curve: Curves.easeInOut),
     );
 
     _startTypingAnimation();
@@ -99,7 +102,8 @@ class _OnboardingFlowState extends State<OnboardingFlow>
     _slideAnimationController.addListener(() {
       if (_slideAnimationController.isCompleted) {
         setState(() {
-          _currentFrameworkIndex = (_currentFrameworkIndex + 1) % _frameworks.length;
+          _currentFrameworkIndex =
+              (_currentFrameworkIndex + 1) % _frameworks.length;
         });
         _slideAnimationController.reset();
         Future.delayed(const Duration(milliseconds: 1000), () {
@@ -152,6 +156,7 @@ class _OnboardingFlowState extends State<OnboardingFlow>
     if (Navigator.of(context).canPop()) {
       Navigator.of(context).pop();
     } else {
+      // Make sure 'projectDashboardScreen' is correctly defined in your AppRoutes
       Navigator.pushReplacementNamed(context, AppRoutes.projectDashboardScreen);
     }
   }
@@ -173,7 +178,8 @@ class _OnboardingFlowState extends State<OnboardingFlow>
                       onPressed: _skipOnboarding,
                       child: Text(
                         'Skip',
-                        style: AppTheme.lightTheme.textTheme.labelLarge?.copyWith(
+                        style: AppTheme.lightTheme.textTheme.labelLarge
+                            ?.copyWith(
                           color: AppTheme.lightTheme.colorScheme.primary,
                         ),
                       ),
@@ -191,10 +197,10 @@ class _OnboardingFlowState extends State<OnboardingFlow>
                     });
                   },
                   children: [
-                    _buildPromptInputPage(context), // Pass context
-                    _buildMultiFrameworkPage(context), // Pass context
-                    _buildMobileFeaturesPage(context), // Pass context
-                    _buildFrameworkSelectionPage(context), // Pass context
+                    _buildPromptInputPage(context),
+                    _buildMultiFrameworkPage(context),
+                    _buildMobileFeaturesPage(context),
+                    _buildFrameworkSelectionPage(context),
                   ],
                 ),
               ),
@@ -217,8 +223,8 @@ class _OnboardingFlowState extends State<OnboardingFlow>
                                   'Back',
                                   style: AppTheme.lightTheme.textTheme.labelLarge
                                       ?.copyWith(
-                                    color:
-                                        AppTheme.lightTheme.colorScheme.secondary,
+                                    color: AppTheme
+                                        .lightTheme.colorScheme.secondary,
                                   ),
                                 ),
                               )
@@ -226,29 +232,30 @@ class _OnboardingFlowState extends State<OnboardingFlow>
                         Expanded(
                           child: Align(
                             alignment: Alignment.centerRight,
-                            child:
-                                Container(
-                                  decoration: AppTheme.getAccentGradientDecoration(),
-                                  child: ElevatedButton(
-                                    onPressed: _nextPage,
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.transparent,
-                                      shadowColor: Colors.transparent,
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 8.w, vertical: 2.h),
-                                    ),
-                                    child: Text(
-                                      _currentPage == _totalPages - 1
-                                          ? 'Get Started'
-                                          : 'Next',
-                                      style: AppTheme.lightTheme.textTheme.labelLarge
-                                          ?.copyWith(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
+                            child: Container(
+                              decoration:
+                                  AppTheme.getAccentGradientDecoration(),
+                              child: ElevatedButton(
+                                onPressed: _nextPage,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.transparent,
+                                  shadowColor: Colors.transparent,
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 8.w, vertical: 2.h),
+                                ),
+                                child: Text(
+                                  _currentPage == _totalPages - 1
+                                      ? 'Get Started'
+                                      : 'Next',
+                                  style: AppTheme.lightTheme.textTheme
+                                      .labelLarge
+                                      ?.copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
+                              ),
+                            ),
                           ),
                         ),
                       ],
@@ -263,10 +270,11 @@ class _OnboardingFlowState extends State<OnboardingFlow>
     );
   }
 
-  Widget _buildPromptInputPage(BuildContext context) { // Accept context
+  Widget _buildPromptInputPage(BuildContext context) {
     return OnboardingPageWidget(
-      headline: 'Natural Language
-Code Generation',
+      headline: '''
+Natural Language
+Code Generation''',
       description:
           'Simply describe what you want to build in plain English. Our AI understands your requirements and generates production-ready code instantly.',
       illustration: Container(
@@ -324,10 +332,11 @@ Code Generation',
     );
   }
 
-  Widget _buildMultiFrameworkPage(BuildContext context) { // Accept context
+  Widget _buildMultiFrameworkPage(BuildContext context) {
     return OnboardingPageWidget(
-      headline: 'Multi-Framework
-Support',
+      headline: '''
+Multi-Framework
+Support''',
       description:
           'Generate code for React, Vue, Angular, Node.js, Python, and more. Switch between frameworks seamlessly with consistent quality.',
       illustration: Container(
@@ -415,7 +424,7 @@ Support',
     );
   }
 
-  Widget _buildMobileFeaturesPage(BuildContext context) { // Accept context
+  Widget _buildMobileFeaturesPage(BuildContext context) {
     final features = [
       {
         'icon': 'mic',
@@ -435,8 +444,9 @@ Support',
     ];
 
     return OnboardingPageWidget(
-      headline: 'Mobile-First
-Development',
+      headline: '''
+Mobile-First
+Development''',
       description:
           'Optimized for mobile developers. Voice input, offline generation, and seamless project export make coding on-the-go effortless.',
       illustration: Container(
@@ -503,17 +513,21 @@ Development',
     );
   }
 
-  Widget _buildFrameworkSelectionPage(BuildContext context) { // Accept context
+  Widget _buildFrameworkSelectionPage(BuildContext context) {
     return OnboardingPageWidget(
-      headline: 'Choose Your
-Framework',
+      headline: '''
+Choose Your
+Framework''',
       description:
           'Select your preferred frameworks to get started. You can always change these later in settings.',
-      illustration: Container(
+      illustration: SizedBox(
         width: 80.w,
         height: 25.h,
         child: SingleChildScrollView(
-          child: FrameworkSelectionWidget(onFrameworkSelected: (framework) {  }), // Added missing required argument
+          child: FrameworkSelectionWidget(onFrameworkSelected: (framework) {
+            // TODO: Implement framework selection logic
+            print('$framework selected');
+          }),
         ),
       ),
     );

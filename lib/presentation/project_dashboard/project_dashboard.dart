@@ -3,6 +3,7 @@ import 'package:sizer/sizer.dart';
 
 import '../../core/app_export.dart';
 import '../../models/project.dart';
+import '../widgets/custom_icon_widget.dart'; // Direct import for CustomIconWidget
 import './widgets/empty_state_widget.dart';
 import './widgets/project_card_widget.dart';
 import './widgets/stats_card_widget.dart';
@@ -22,11 +23,13 @@ class _ProjectDashboardState extends State<ProjectDashboard> {
       if (hours != null) {
         return now.subtract(Duration(hours: hours));
       }
-    } else if (relativeTime.contains('day ago') || relativeTime.contains('days ago')) {
+    } else if (relativeTime.contains('day ago') ||
+        relativeTime.contains('days ago')) {
       final days = int.tryParse(relativeTime.split(' ')[0]);
       if (days != null) {
         return now.subtract(Duration(days: days));
-      } else if (relativeTime == '1 day ago') { // Handle singular "1 day ago"
+      } else if (relativeTime == '1 day ago') {
+        // Handle singular "1 day ago"
         return now.subtract(const Duration(days: 1));
       }
     }
@@ -44,7 +47,8 @@ class _ProjectDashboardState extends State<ProjectDashboard> {
         framework: 'React',
         lastModified: _parseRelativeTime('2 hours ago'),
         status: 'Active',
-        description: 'Full-stack e-commerce application with payment integration',
+        description:
+            'Full-stack e-commerce application with payment integration',
         progress: 0.75,
         filePaths: [], // Added required filePaths argument
       ),
@@ -126,15 +130,14 @@ class _ProjectDashboardState extends State<ProjectDashboard> {
                 ),
               ],
             ),
-
             SizedBox(height: 3.h),
-
             Row(
               children: [
                 Expanded(
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      Navigator.pushNamed(context, AppRoutes.codeGenerationScreen);
+                      Navigator.pushNamed(
+                          context, AppRoutes.codeGenerationScreen);
                     },
                     icon: CustomIconWidget(
                         iconName: 'add', color: Colors.white, size: 20),
@@ -152,7 +155,8 @@ class _ProjectDashboardState extends State<ProjectDashboard> {
                 Expanded(
                   child: OutlinedButton.icon(
                     onPressed: () {
-                      Navigator.pushNamed(context, AppRoutes.templateLibraryScreen);
+                      Navigator.pushNamed(
+                          context, AppRoutes.templateLibraryScreen);
                     },
                     icon: CustomIconWidget(
                         iconName: 'library_books',
@@ -170,13 +174,10 @@ class _ProjectDashboardState extends State<ProjectDashboard> {
                 ),
               ],
             ),
-
             SizedBox(height: 4.h),
-
             Text('Recent Projects',
                 style: AppTheme.lightTheme.textTheme.titleMedium),
             SizedBox(height: 2.h),
-
             if (_projects.isEmpty)
               EmptyStateWidget(
                 onCreateProject: () {
@@ -195,7 +196,9 @@ class _ProjectDashboardState extends State<ProjectDashboard> {
                     child: ProjectCardWidget(
                       project: project,
                       onTap: () {
-                        Navigator.pushNamed(context, AppRoutes.codePreviewScreen, arguments: project);
+                        Navigator.pushNamed(
+                            context, AppRoutes.codePreviewScreen,
+                            arguments: project);
                       },
                       onLongPress: () {
                         _showProjectOptions(context, project);

@@ -140,3 +140,4 @@ flutter build ios --release
 - Styled with Material Design
 
 Built with ❤️ on Rocket.new
+right before finished need to save and re-clone project

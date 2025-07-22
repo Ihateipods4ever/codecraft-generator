@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// Assuming these are correctly defined in your project.
 import '../../../core/app_export.dart';
 import '../../widgets/custom_icon_widget.dart';
 
@@ -22,6 +23,7 @@ class CodeToolbarWidget extends StatelessWidget {
   }) : super(key: key);
 
   bool _canRunFile(String fileName) {
+    // A simple utility to check if the file is runnable based on its extension.
     final extension = fileName.split('.').last.toLowerCase();
     return ['dart', 'js', 'py', 'java'].contains(extension);
   }
@@ -29,11 +31,11 @@ class CodeToolbarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final canRun = _canRunFile(currentFile["name"]);
+    final canRun = _canRunFile(currentFile["name"] ?? 'unknown.file');
 
     return Container(
       height: 80,
-      padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
       decoration: BoxDecoration(
         color: isDark ? AppTheme.surfaceDark : AppTheme.surfaceLight,
         border: Border(
@@ -51,67 +53,73 @@ class CodeToolbarWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  currentFile["name"],
+                  // Safely access file name with a fallback value.
+                  currentFile["name"] ?? 'No file selected',
                   style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                    color: isDark
-                        ? AppTheme.textPrimaryDark
-                        : AppTheme.textPrimaryLight,
-                    fontWeight: FontWeight.w500,
-                  ),
+                        color: isDark
+                            ? AppTheme.textPrimaryDark
+                            : AppTheme.textPrimaryLight,
+                        fontWeight: FontWeight.w500,
+                      ),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                 ),
                 Text(
-                  '${currentFile["size"]} • Modified ${_formatTime(currentFile["lastModified"])}',
+                  // Safely access file properties.
+                  '${currentFile["size"] ?? '0 KB'} • Modified ${_formatTime(currentFile["lastModified"])}',
                   style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: isDark
-                        ? AppTheme.textSecondaryDark
-                        : AppTheme.textSecondaryLight,
-                  ),
+                        color: isDark
+                            ? AppTheme.textSecondaryDark
+                            : AppTheme.textSecondaryLight,
+                      ),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                 ),
               ],
             ),
           ),
-          Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
+          // Using a Spacer to push the buttons to the right.
+          const Spacer(),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              _buildToolbarButton(
+                context: context, // Pass context
+                icon: 'content_copy',
+                label: 'Copy',
+                onTap: onCopy,
+                isDark: isDark,
+              ),
+              const SizedBox(width: 16.0),
+              _buildToolbarButton(
+                context: context, // Pass context
+                icon: 'code',
+                label: 'Format',
+                onTap: onFormat,
+                isDark: isDark,
+              ),
+              if (canRun) ...[
+                const SizedBox(width: 16.0),
                 _buildToolbarButton(
-                  icon: 'content_copy',
-                  label: 'Copy',
-                  onTap: onCopy,
+                  context: context, // Pass context
+                  icon: 'play_arrow',
+                  label: 'Run',
+                  onTap: onRun,
                   isDark: isDark,
-                ),
-                SizedBox(width: 16.0),
-                _buildToolbarButton(
-                  icon: 'code',
-                  label: 'Format',
-                  onTap: onFormat,
-                  isDark: isDark,
-                ),
-                if (canRun) ...[
-                  SizedBox(width: 16.0),
-                  _buildToolbarButton(
-                    icon: 'play_arrow',
-                    label: 'Run',
-                    onTap: onRun,
-                    isDark: isDark,
-                    isHighlighted: true,
-                  ),
-                ],
-                SizedBox(width: 16.0),
-                _buildToolbarButton(
-                  icon: isOptimizing ? 'hourglass_empty' : 'auto_fix_high',
-                  label: 'AI Optimize',
-                  onTap: isOptimizing ? null : onOptimize,
-                  isDark: isDark,
-                  isLoading: isOptimizing,
                   isHighlighted: true,
                 ),
               ],
-            ),
+              const SizedBox(width: 16.0),
+              _buildToolbarButton(
+                context: context, // Pass context
+                icon: isOptimizing ? 'hourglass_empty' : 'auto_fix_high',
+                label: 'AI Optimize',
+                onTap: isOptimizing ? null : onOptimize,
+                isDark: isDark,
+                isLoading: isOptimizing,
+                isHighlighted: true,
+              ),
+            ],
           ),
         ],
       ),
@@ -119,6 +127,8 @@ class CodeToolbarWidget extends StatelessWidget {
   }
 
   Widget _buildToolbarButton({
+    // Corrected: Added BuildContext as a parameter to safely access the theme.
+    required BuildContext context,
     required String icon,
     required String label,
     required VoidCallback? onTap,
@@ -126,68 +136,60 @@ class CodeToolbarWidget extends StatelessWidget {
     bool isHighlighted = false,
     bool isLoading = false,
   }) {
+    // Corrected: All instances of Theme.of(null!) are replaced with Theme.of(context).
+    // This resolves the 'null_check_always_fails' warnings and prevents runtime crashes.
+    final theme = Theme.of(context);
+    final primaryColor = theme.primaryColor;
+    final labelSmallStyle = theme.textTheme.labelSmall;
+
+    Color iconColor;
+    Color labelColor;
+
+    if (onTap == null) {
+      iconColor = isDark ? AppTheme.textDisabledDark : AppTheme.textDisabledLight;
+      labelColor = isDark ? AppTheme.textDisabledDark : AppTheme.textDisabledLight;
+    } else if (isHighlighted) {
+      iconColor = primaryColor;
+      labelColor = primaryColor;
+    } else {
+      iconColor = isDark ? AppTheme.textSecondaryDark : AppTheme.textSecondaryLight;
+      labelColor = isDark ? AppTheme.textSecondaryDark : AppTheme.textSecondaryLight;
+    }
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
         decoration: BoxDecoration(
-          color: isHighlighted
-              ? (isDark
-                  ? Theme.of(null!).primaryColor.withOpacity(0.1)
-                  : Theme.of(null!).primaryColor.withOpacity(0.1))
-              : Colors.transparent,
+          color: isHighlighted ? primaryColor.withOpacity(0.1) : Colors.transparent,
           borderRadius: BorderRadius.circular(8),
           border: isHighlighted
-              ? Border.all(
-                  color: isDark ? Theme.of(null!).primaryColor : Theme.of(null!).primaryColor,
-                  width: 1,
-                )
+              ? Border.all(color: primaryColor, width: 1)
               : null,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            isLoading
-                ? SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        isDark ? Theme.of(null!).primaryColor : Theme.of(null!).primaryColor,
-                      ),
-                    ),
-                  )
-                : CustomIconWidget(
-                    iconName: icon,
-                    color: onTap == null
-                        ? (isDark
-                            ? AppTheme.textDisabledDark
-                            : AppTheme.textDisabledLight)
-                        : isHighlighted
-                            ? (isDark
-                                ? Theme.of(null!).primaryColor
-                                : Theme.of(null!).primaryColor)
-                            : (isDark
-                                ? AppTheme.textSecondaryDark
-                                : AppTheme.textSecondaryLight),
-                    size: 20,
-                  ),
-            SizedBox(height: 4.0),
+            if (isLoading)
+              SizedBox(
+                width: 20, // Adjusted size to fit well
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+                ),
+              )
+            else
+              CustomIconWidget(
+                iconName: icon,
+                color: iconColor,
+                size: 20,
+              ),
+            const SizedBox(height: 4.0),
             Text(
               label,
-              style: Theme.of(null!).textTheme.labelSmall?.copyWith(
-                color: onTap == null
-                    ? (isDark
-                        ? AppTheme.textDisabledDark
-                        : AppTheme.textDisabledLight)
-                    : isHighlighted
-                        ? (isDark
-                            ? Theme.of(null!).primaryColor
-                            : Theme.of(null!).primaryColor)
-                        : (isDark
-                            ? AppTheme.textSecondaryDark
-                            : AppTheme.textSecondaryLight),
+              style: labelSmallStyle?.copyWith(
+                color: labelColor,
                 fontSize: 9,
               ),
               overflow: TextOverflow.ellipsis,
@@ -199,7 +201,12 @@ class CodeToolbarWidget extends StatelessWidget {
     );
   }
 
-  String _formatTime(DateTime dateTime) {
+  String _formatTime(DateTime? dateTime) {
+    // Added a null check for safety.
+    if (dateTime == null) {
+      return 'a while ago';
+    }
+
     final now = DateTime.now();
     final difference = now.difference(dateTime);
 
